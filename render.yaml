@@ -1,0 +1,35 @@
+# Render Blueprint: creates the website and its PostgreSQL database.
+# In Render: New → Blueprint → pick this repository → Apply.
+services:
+  - type: web
+    name: carepoint-hospital
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: carepoint-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: carepoint-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: carepoint-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: carepoint-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: carepoint-db
+          property: password
+
+databases:
+  - name: carepoint-db
+    plan: free
+    databaseName: hospital_db
+    user: hospital
