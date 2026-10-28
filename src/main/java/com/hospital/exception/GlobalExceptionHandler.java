@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 // What is @RestControllerAdvice?
 // This class WATCHES all your controllers.
@@ -106,6 +107,29 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
                 error, HttpStatus.CONFLICT);
+    }
+
+    // ════════════════════════════════════════
+    // Handle unknown URLs
+    // ════════════════════════════════════════
+
+    // Example: /favicon.ico or a mistyped path.
+    // This is a 404, not a server error.
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse>
+            handleNoResourceFound(
+            NoResourceFoundException ex) {
+
+        ErrorResponse error = new ErrorResponse(
+                404,
+                "Page not found: /"
+                        + ex.getResourcePath(),
+                LocalDateTime.now(),
+                "NOT_FOUND"
+        );
+
+        return new ResponseEntity<>(
+                error, HttpStatus.NOT_FOUND);
     }
 
     // ════════════════════════════════════════

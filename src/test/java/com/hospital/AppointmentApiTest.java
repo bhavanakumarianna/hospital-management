@@ -3,6 +3,7 @@ package com.hospital;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,6 +83,19 @@ class AppointmentApiTest {
         // Completed appointments cannot be cancelled
         mockMvc.perform(put("/api/appointments/1/cancel"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void homePageServesWebsite() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl("index.html"));
+
+        mockMvc.perform(get("/app.js"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/no-such-page"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
