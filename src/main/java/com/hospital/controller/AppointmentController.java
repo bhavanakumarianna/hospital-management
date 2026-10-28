@@ -59,6 +59,22 @@ public class AppointmentController {
                 appointment, HttpStatus.CREATED);
     }
 
+    // Public: which times a doctor is already booked
+    // (no patient details, safe for the website)
+    // GET /api/appointments/booked-slots?doctorId=1&date=2026-09-15
+    @GetMapping("/booked-slots")
+    public ResponseEntity<List<LocalTime>> getBookedSlots(
+            @RequestParam Long doctorId,
+            @RequestParam
+            @DateTimeFormat(iso =
+                DateTimeFormat.ISO.DATE)
+            LocalDate date) {
+        return new ResponseEntity<>(
+                appointmentService.getBookedSlots(
+                        doctorId, date),
+                HttpStatus.OK);
+    }
+
     // API 2: Get appointment by id
     // GET /api/appointments/1
     @GetMapping("/{id}")

@@ -30,17 +30,18 @@ A REST API for managing **patients**, **doctors** and **appointments**, built wi
 - JDK 17+
 - MySQL running on `localhost:3306`
 
-### 2. Configure the database
+### 2. Configure secrets
 
-Credentials are read from environment variables, so no password is stored in the code:
+Create a `.env` file in the project folder (it is git-ignored, so it never reaches GitHub):
 
-```bash
-export DB_USERNAME=root
-export DB_PASSWORD=your_mysql_password
-# optional, defaults to jdbc:mysql://localhost:3306/hospital_db
-# export DB_URL=jdbc:mysql://localhost:3306/hospital_db
+```properties
+DB_PASSWORD=your_mysql_password
+ADMIN_EMAIL=admin@carepoint.com
+ADMIN_PASSWORD=choose_an_admin_password
+# optional: DB_USERNAME (default root), DB_URL (default jdbc:mysql://localhost:3306/hospital_db)
 ```
 
+The app reads `.env` automatically, both from the terminal and from the VS Code Run button.
 The `hospital_db` database and its tables are created automatically on first run.
 
 ### 3. Run
@@ -49,8 +50,25 @@ The `hospital_db` database and its tables are created automatically on first run
 ./mvnw spring-boot:run
 ```
 
-Open **http://localhost:8080** for the public hospital website, or **http://localhost:8080/admin.html** for the staff portal.
-The REST API is available under `http://localhost:8080/api/...`.
+or open `HospitalManagementApplication.java` in VS Code and click **Run**.
+
+| Page | URL |
+|---|---|
+| Hospital website | http://localhost:8080 |
+| Sign in / create patient account | http://localhost:8080/login.html |
+| Patient dashboard | http://localhost:8080/patient.html |
+| Doctor portal | http://localhost:8080/doctor.html |
+| Staff portal | http://localhost:8080/admin.html |
+
+### Logins
+
+| Role | How they get a login | What they can do |
+|---|---|---|
+| **Admin** | Created on first start from `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Everything in the staff portal; create doctor & patient logins |
+| **Doctor** | Staff portal → Doctors → **Create login** (doctor signs in with their email) | See own schedule, complete visits with notes, cancel, set availability |
+| **Patient** | Self sign-up on the website, or staff portal → Patients → **Create login** | Book online, see own appointments and doctor's notes, cancel |
+
+Passwords are stored as BCrypt hashes. All staff APIs (`/api/patients`, `/api/doctors` writes, `/api/appointments`, `/api/accounts`) require an admin sign-in.
 
 ### 4. Test
 

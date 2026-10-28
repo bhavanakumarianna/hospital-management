@@ -23,6 +23,10 @@
         <button class="tab" data-view="appointments">Appointments</button>
         <a class="tab" href="/">← Public website</a>
     </nav>
+    <div class="who">
+        <small id="admin-name"></small>
+        <button class="btn small" id="logout">Sign out</button>
+    </div>
 </header>
 
 <main class="container">
@@ -61,7 +65,7 @@
             <input type="search" id="patient-search" class="search" placeholder="Search patients by name…">
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Age</th><th>Gender</th><th>City</th><th>Blood</th><th></th></tr></thead>
+                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Age</th><th>Gender</th><th>City</th><th>Blood</th><th>Login</th><th></th></tr></thead>
                     <tbody id="patients-body"></tbody>
                 </table>
             </div>
@@ -78,7 +82,7 @@
             <input type="search" id="doctor-search" class="search" placeholder="Search doctors by name…">
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>ID</th><th>Name</th><th>Specialization</th><th>Department</th><th>Experience</th><th>Fee</th><th>Phone</th><th>Status</th><th></th></tr></thead>
+                    <thead><tr><th>ID</th><th>Name</th><th>Specialization</th><th>Department</th><th>Experience</th><th>Fee</th><th>Phone</th><th>Status</th><th>Login</th><th></th></tr></thead>
                     <tbody id="doctors-body"></tbody>
                 </table>
             </div>
@@ -185,6 +189,20 @@
         <div class="actions">
             <button type="button" class="btn" data-close>Cancel</button>
             <button type="submit" class="btn primary">Mark completed</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="login-dialog">
+    <form id="login-form" method="dialog">
+        <h2>Set login password</h2>
+        <p id="login-who" class="muted"></p>
+        <input type="hidden" name="kind">
+        <input type="hidden" name="id">
+        <label>New password<input name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></label>
+        <div class="actions">
+            <button type="button" class="btn" data-close>Cancel</button>
+            <button type="submit" class="btn primary">Save login</button>
         </div>
     </form>
 </dialog>

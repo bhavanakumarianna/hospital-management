@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Doctor Portal · CarePoint Hospital</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e7c7b'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='white'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="css/portal.css">
+</head>
+<body class="portal">
+
+<header class="portal-bar">
+    <div class="wrap portal-bar-inner">
+        <a href="/" class="logo">
+            <span class="logo-mark">+</span>
+            <span class="logo-text">CarePoint<small>Doctor Portal</small></span>
+        </a>
+        <nav class="portal-links">
+            <a href="/">Hospital website</a>
+        </nav>
+        <div class="user-chip">
+            <span class="avatar" id="user-initials">–</span>
+            <div><strong id="user-name">…</strong><small id="user-spec">Doctor</small></div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="logout">Sign out</button>
+    </div>
+</header>
+
+<main class="portal-main">
+    <div class="wrap">
+        <div class="portal-hello">
+            <div>
+                <span class="kicker">Doctor portal</span>
+                <h1 id="greeting">Good day</h1>
+                <p id="today-line">Your schedule at a glance.</p>
+            </div>
+        </div>
+
+        <div class="mini-stats">
+            <div class="mini-stat"><span>Today</span><strong id="count-today">0</strong></div>
+            <div class="mini-stat"><span>Upcoming</span><strong id="count-upcoming">0</strong></div>
+            <div class="mini-stat"><span>Completed</span><strong id="count-completed">0</strong></div>
+        </div>
+
+        <div class="portal-grid">
+            <div>
+                <section class="panel">
+                    <div class="panel-head">
+                        <h2>My appointments</h2>
+                        <div class="tabs-inline" id="filters">
+                            <button class="chip active" data-filter="today">Today</button>
+                            <button class="chip" data-filter="upcoming">Upcoming</button>
+                            <button class="chip" data-filter="completed">Completed</button>
+                            <button class="chip" data-filter="all">All</button>
+                        </div>
+                    </div>
+                    <div class="appt-list" id="list"></div>
+                </section>
+            </div>
+            <aside class="panel profile">
+                <h2>My profile</h2>
+                <dl id="profile"></dl>
+                <div class="switch">
+                    <div><strong id="avail-label">Available</strong><small>Patients can book you online</small></div>
+                    <button class="btn btn-sm" id="toggle-avail">Change</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<dialog class="modal" id="complete-dialog">
+    <form id="complete-form" method="dialog">
+        <h2>Complete appointment</h2>
+        <p class="auth-sub" id="complete-who"></p>
+        <input type="hidden" name="id">
+        <label class="field">Doctor's notes (visible to the patient)
+            <textarea name="doctorNotes" rows="5" required maxlength="1000" placeholder="Diagnosis, prescription, advice, follow-up…"></textarea>
+        </label>
+        <div class="actions">
+            <button type="button" class="btn btn-ghost btn-sm" data-close>Back</button>
+            <button type="submit" class="btn btn-primary btn-sm">Mark completed</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="js/auth.js"></script>
+<script>
+    const { esc, prettyDate, prettyTime, today, toast } = Auth;
+    let appts = [];
+    let filter = "today";
+
+    function initials(name) {
+        return name.replace(/^dr\.?\s*/i, "").split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+    }
+
+    function render() {
+        const now = today();
+        const key = a => a.appointmentDate + a.appointmentTime;
+        const scheduled = appts.filter(a => a.status === "SCHEDULED");
+        const lists = {
+            today: scheduled.filter(a => a.appointmentDate === now),
+            upcoming: scheduled.filter(a => a.appointmentDate >= now),
+            completed: appts.filter(a => a.status === "COMPLETED"),
+            all: appts,
+        };
+        document.getElementById("count-today").textContent = lists.today.length;
+        document.getElementById("count-upcoming").textContent = lists.upcoming.length;
+        document.getElementById("count-completed").textContent = lists.completed.length;
+
+        const list = [...lists[filter]].sort((a, b) =>
+            filter === "completed" || filter === "all"
+                ? key(b).localeCompare(key(a)) : key(a).localeCompare(key(b)));
+
+        document.getElementById("list").innerHTML = list.length ? list.map(a => {
+            const d = new Date(a.appointmentDate + "T00:00");
+            const p = a.patient;
+            const status = a.status.charAt(0) + a.status.slice(1).toLowerCase();
+            const details = [p.age ? `${p.age} yrs` : "", p.gender, p.bloodGroup ? `Blood ${p.bloodGroup}` : ""]
+                .filter(Boolean).join(" · ");
+            return `
+                <div class="appt-row">
+                    <div class="appt-date">
+                        <strong>${d.getDate()}</strong>
+                        <small>${d.toLocaleDateString(undefined, { month: "short" })}</small>
+                    </div>
+                    <div class="appt-info">
+                        <strong>${esc(p.name)} <small style="display:inline">· ${esc(prettyTime(a.appointmentTime))}</small></strong>
+                        <small>${esc(details)}${details ? " · " : ""}${esc(p.phone)}</small>
+                        <small>Reason: ${esc(a.reason)}</small>
+                    </div>
+                    <div class="appt-actions">
+                        <span class="badge ${esc(a.status)}">${esc(status)}</span>
+                        ${a.status === "SCHEDULED" ? `
+                            <button class="btn btn-primary btn-sm" data-complete="${a.id}">Complete</button>
+                            <button class="btn btn-ghost btn-sm" data-cancel="${a.id}">Cancel</button>` : ""}
+                    </div>
+                    ${a.doctorNotes ? `<div class="appt-notes"><strong>Notes:</strong> ${esc(a.doctorNotes)}</div>` : ""}
+                </div>`;
+        }).join("") : `<div class="empty">No appointments here.</div>`;
+    }
+
+    function renderProfile(d) {
+        const rows = [
+            ["Specialization", d.specialization], ["Department", d.department || "—"],
+            ["Qualification", d.qualification || "—"], ["Experience", `${d.experienceYears} yrs`],
+            ["Consultation fee", d.consultationFee ? `$${d.consultationFee}` : "—"],
+            ["Email", d.email], ["Phone", d.phone],
+        ];
+        document.getElementById("profile").innerHTML =
+            rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
+        document.getElementById("avail-label").textContent = d.available ? "Available" : "Not available";
+        const btn = document.getElementById("toggle-avail");
+        btn.textContent = d.available ? "Set unavailable" : "Set available";
+        btn.className = "btn btn-sm " + (d.available ? "btn-ghost" : "btn-primary");
+    }
+
+    async function load() {
+        appts = await Auth.api("/doctor-portal/appointments");
+        render();
+    }
+
+    async function init() {
+        const user = await Auth.requireRole("DOCTOR");
+        if (!user) return;
+        document.getElementById("user-name").textContent = user.name;
+        document.getElementById("user-initials").textContent = initials(user.name);
+        const hour = new Date().getHours();
+        const part = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+        document.getElementById("greeting").textContent = `${part}, ${user.name}`;
+        document.getElementById("today-line").textContent =
+            new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+        const doctor = await Auth.api("/doctor-portal/profile");
+        document.getElementById("user-spec").textContent = doctor.specialization;
+        renderProfile(doctor);
+        await load();
+    }
+
+    document.getElementById("logout").addEventListener("click", Auth.logout);
+
+    document.getElementById("filters").addEventListener("click", (e) => {
+        const chip = e.target.closest(".chip");
+        if (!chip) return;
+        filter = chip.dataset.filter;
+        document.querySelectorAll("#filters .chip").forEach(c => c.classList.toggle("active", c === chip));
+        render();
+    });
+
+    document.getElementById("toggle-avail").addEventListener("click", async () => {
+        try {
+            renderProfile(await Auth.api("/doctor-portal/availability", { method: "PUT" }));
+            toast("Availability updated");
+        } catch (err) { toast(err.message, true); }
+    });
+
+    document.querySelector("[data-close]").addEventListener("click", () =>
+        document.getElementById("complete-dialog").close());
+
+    document.addEventListener("click", async (e) => {
+        const complete = e.target.closest("[data-complete]");
+        const cancel = e.target.closest("[data-cancel]");
+        if (complete) {
+            const a = appts.find(x => x.id == complete.dataset.complete);
+            const form = document.getElementById("complete-form");
+            form.reset();
+            form.elements.id.value = a.id;
+            document.getElementById("complete-who").textContent =
+                `${a.patient.name} · ${prettyDate(a.appointmentDate)} at ${prettyTime(a.appointmentTime)}`;
+            document.getElementById("complete-dialog").showModal();
+        } else if (cancel && confirm("Cancel this appointment?")) {
+            try {
+                await Auth.api(`/doctor-portal/appointments/${cancel.dataset.cancel}/cancel`, { method: "PUT" });
+                toast("Appointment cancelled");
+                load();
+            } catch (err) { toast(err.message, true); }
+        }
+    });
+
+    document.getElementById("complete-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const { id, doctorNotes } = Object.fromEntries(new FormData(e.target));
+        try {
+            await Auth.api(`/doctor-portal/appointments/${id}/complete?${new URLSearchParams({ doctorNotes })}`,
+                { method: "PUT" });
+            document.getElementById("complete-dialog").close();
+            toast("Appointment completed");
+            load();
+        } catch (err) { toast(err.message, true); }
+    });
+
+    init().catch(err => toast(err.message, true));
+</script>
+</body>
+</html>

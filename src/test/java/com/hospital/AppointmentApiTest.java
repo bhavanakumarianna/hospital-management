@@ -12,12 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 // Full flow test: real controllers + services
 // + in-memory H2 database (no MySQL needed).
+// Runs as a signed-in admin (staff portal APIs)
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(roles = "ADMIN")
+@DirtiesContext
 class AppointmentApiTest {
 
     @Autowired
@@ -105,6 +110,13 @@ class AppointmentApiTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/admin.html"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/login.html"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/patient.html"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/doctor.html"))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/no-such-page"))

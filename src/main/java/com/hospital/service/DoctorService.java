@@ -8,16 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hospital.entity.Doctor;
 import com.hospital.exception.ResourceNotFoundException;
 import com.hospital.repository.DoctorRepository;
+import com.hospital.repository.UserAccountRepository;
 
 @Service
 @Transactional
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final UserAccountRepository accountRepository;
 
     public DoctorService(
-            DoctorRepository doctorRepository) {
+            DoctorRepository doctorRepository,
+            UserAccountRepository accountRepository) {
         this.doctorRepository = doctorRepository;
+        this.accountRepository = accountRepository;
     }
 
     public Doctor addDoctor(Doctor doctor) {
@@ -72,6 +76,8 @@ public class DoctorService {
 
     public void deleteDoctor(Long id) {
         getDoctorById(id);
+        // Their login goes too
+        accountRepository.deleteByDoctorId(id);
         doctorRepository.deleteById(id);
     }
 

@@ -28,7 +28,8 @@ for (let h = 9; h < 17; h++) {
     SLOTS.push(`${String(h).padStart(2, "0")}:00`, `${String(h).padStart(2, "0")}:30`);
 }
 
-const state = { doctors: [], specFilter: "All" };
+const state = { doctors: [], specFilter: "All", user: null };
+const PENDING_KEY = "carepoint.pendingBooking";
 
 // ─── Helpers ───
 
@@ -268,10 +269,8 @@ async function loadSlots() {
     }
     select.innerHTML = `<option value="">Checking availability…</option>`;
     try {
-        const appointments = await api(`/appointments/doctor/${doctorId}`);
-        const taken = new Set(appointments
-            .filter(a => a.appointmentDate === date && a.status === "SCHEDULED")
-            .map(a => a.appointmentTime.slice(0, 5)));
+        const booked = await api(`/appointments/booked-slots?${new URLSearchParams({ doctorId, date })}`);
+        const taken = new Set(booked.map(t => t.slice(0, 5)));
         const now = new Date();
         const nowTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
         const free = SLOTS.filter(s => !taken.has(s) && !(date === today() && s <= nowTime));
@@ -313,58 +312,77 @@ $("#book-form").addEventListener("submit", async (e) => {
         if (bad && !firstInvalid) firstInvalid = el;
     });
     if (firstInvalid) {
-        errorEl.textContent = firstInvalid.name === "phone"
-            ? "Please enter a phone number with 10–15 digits."
-            : "Please complete the highlighted fields.";
+        errorEl.textContent = "Please complete the highlighted fields.";
         firstInvalid.focus();
         return;
     }
 
     const data = Object.fromEntries(new FormData(form));
+
+    // Booking needs a patient account: remember the choice,
+    // sign in, then come back here to confirm.
+    if (state.user?.role !== "PATIENT") {
+        try { sessionStorage.setItem(PENDING_KEY, JSON.stringify(data)); } catch { /* optional */ }
+        location.href = `login.html?next=${encodeURIComponent("/#book")}`;
+        return;
+    }
+
     const submit = $("#book-submit");
     submit.disabled = true;
     submit.textContent = "Booking…";
-
     try {
-        // Returning patient? Find them by email; otherwise register.
-        let patient;
-        try {
-            patient = await api(`/patients/by-email?email=${encodeURIComponent(data.email.trim())}`);
-        } catch (err) {
-            if (err.status !== 404) throw err;
-            patient = await api("/patients", {
-                method: "POST",
-                body: JSON.stringify({
-                    name: data.name.trim(),
-                    email: data.email.trim(),
-                    phone: data.phone.trim(),
-                    age: data.age ? Number(data.age) : 0,
-                    gender: data.gender,
-                    bloodGroup: data.bloodGroup,
-                    city: data.city.trim(),
-                }),
-            });
-        }
-
         const params = new URLSearchParams({
-            patientId: patient.id,
             doctorId: data.doctorId,
             date: data.date,
             time: data.time,
             reason: data.reason.trim(),
         });
-        const appt = await api(`/appointments/book?${params}`, { method: "POST" });
+        const appt = await api(`/me/appointments?${params}`, { method: "POST" });
         showConfirmation(appt);
         form.reset();
         fillDoctorSelect();
         loadSlots();
+        renderStatus();
     } catch (err) {
         errorEl.textContent = err.message;
     } finally {
         submit.disabled = false;
-        submit.innerHTML = `${icon("calendar")} Confirm appointment`;
+        renderAccountBox();
     }
 });
+
+// Who is booking: the signed-in patient, or a prompt to sign in
+function renderAccountBox() {
+    const box = $("#book-account");
+    const submit = $("#book-submit");
+    const user = state.user;
+    if (user?.role === "PATIENT") {
+        box.innerHTML = `
+            <div class="account-box">
+                <span class="avatar">${esc(initials(user.name))}</span>
+                <div><small>Booking as</small><strong>${esc(user.name)}</strong></div>
+                <a href="patient.html">My dashboard →</a>
+            </div>`;
+        submit.innerHTML = `${icon("calendar")} Confirm appointment`;
+        $("#book-note").textContent = "You'll see this booking in your patient dashboard.";
+    } else if (user) {
+        box.innerHTML = `
+            <div class="account-box warn">
+                <div><strong>Signed in as ${esc(user.role.toLowerCase())}</strong>
+                <small>Online booking is for patient accounts. Staff can book from the staff portal.</small></div>
+            </div>`;
+        submit.innerHTML = `${icon("lock")} Sign in as a patient to book`;
+        $("#book-note").textContent = "";
+    } else {
+        box.innerHTML = `
+            <div class="account-box">
+                <div><strong>Sign in to confirm</strong>
+                <small>New here? <a href="login.html?tab=register&next=${encodeURIComponent("/#book")}">Create a free patient account</a> — it takes a minute.</small></div>
+            </div>`;
+        submit.innerHTML = `${icon("lock")} Sign in &amp; book`;
+        $("#book-note").textContent = "Your choices are saved while you sign in.";
+    }
+}
 
 function showConfirmation(appt) {
     const pane = $("#book-done");
@@ -387,19 +405,25 @@ function showConfirmation(appt) {
     $("#book").scrollIntoView();
 }
 
-// ─── Appointment lookup ───
+// ─── My appointments tab ───
 
-$("#status-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = new FormData(e.target).get("email").trim();
-    const out = $("#status-results");
-    out.innerHTML = `<p class="pane-intro">Searching…</p>`;
+async function renderStatus() {
+    const pane = $("#status-pane");
+    if (state.user?.role !== "PATIENT") {
+        pane.innerHTML = `
+            <div class="signed-in-prompt">
+                <p class="pane-intro">Sign in to see, manage and cancel your appointments.</p>
+                <a class="btn btn-primary btn-block" href="login.html">Sign in</a>
+                <a class="btn btn-ghost btn-block" href="login.html?tab=register">Create a patient account</a>
+            </div>`;
+        return;
+    }
     try {
-        const patient = await api(`/patients/by-email?email=${encodeURIComponent(email)}`);
-        const appts = (await api(`/appointments/patient/${patient.id}`))
+        const appts = (await api("/me/appointments"))
             .sort((a, b) => (b.appointmentDate + b.appointmentTime)
-                .localeCompare(a.appointmentDate + a.appointmentTime));
-        out.innerHTML = appts.length ? appts.map(a => {
+                .localeCompare(a.appointmentDate + a.appointmentTime))
+            .slice(0, 5);
+        pane.innerHTML = (appts.length ? appts.map(a => {
             const d = new Date(a.appointmentDate + "T00:00");
             return `
                 <div class="appt">
@@ -413,13 +437,40 @@ $("#status-form").addEventListener("submit", async (e) => {
                     </div>
                     <span class="badge ${esc(a.status)}">${esc(a.status.charAt(0) + a.status.slice(1).toLowerCase())}</span>
                 </div>`;
-        }).join("") : `<p class="pane-intro">No appointments found for this email.</p>`;
+        }).join("") : `<p class="pane-intro">You have no appointments yet.</p>`)
+            + `<a class="btn btn-ghost btn-block" href="patient.html" style="margin-top:12px">Open my dashboard</a>`;
     } catch (err) {
-        out.innerHTML = `<p class="pane-intro">${err.status === 404
-            ? "We couldn't find a patient with that email."
-            : esc(err.message)}</p>`;
+        pane.innerHTML = `<p class="pane-intro">${esc(err.message)}</p>`;
     }
-});
+}
+
+function renderNavAccount() {
+    const link = $("#nav-account");
+    const user = state.user;
+    if (!user) return;
+    link.href = user.role === "ADMIN" ? "admin.html"
+        : user.role === "DOCTOR" ? "doctor.html" : "patient.html";
+    link.querySelector("span").textContent = user.role === "PATIENT" ? "My account"
+        : user.role === "DOCTOR" ? "Doctor portal" : "Staff portal";
+}
+
+// Restore a booking started before signing in
+function restorePendingBooking() {
+    let pending = null;
+    try {
+        pending = JSON.parse(sessionStorage.getItem(PENDING_KEY));
+        sessionStorage.removeItem(PENDING_KEY);
+    } catch { /* optional */ }
+    if (!pending || state.user?.role !== "PATIENT") return;
+    $("#book-department").value = pending.department || "";
+    fillDoctorSelect();
+    $("#book-doctor").value = pending.doctorId || "";
+    $("#book-date").value = pending.date || "";
+    $("#book-form").elements.reason.value = pending.reason || "";
+    loadSlots().then(() => { $("#book-time").value = pending.time || ""; });
+    showTab("new");
+    toast("Welcome back — check the details and confirm your appointment.");
+}
 
 // ─── Load live data ───
 
@@ -446,6 +497,12 @@ async function init() {
     if (state.doctors.length) renderDoctors();
     fillDepartmentSelect();
     fillDoctorSelect();
+
+    state.user = await api("/auth/me").catch(() => null);
+    renderNavAccount();
+    renderAccountBox();
+    renderStatus();
+    restorePendingBooking();
 }
 
 init();

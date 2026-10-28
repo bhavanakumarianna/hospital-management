@@ -1,0 +1,114 @@
+/* ════════════════════════════════════════
+   Sign-in page + patient & doctor portals
+   (loaded after site.css, reuses its colours)
+   ════════════════════════════════════════ */
+
+body.portal { background: var(--cream); min-height: 100vh; }
+
+/* ─── Portal header ─── */
+.portal-bar { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+.portal-bar-inner { display: flex; align-items: center; gap: 20px; height: 72px; }
+.portal-links { display: flex; gap: 4px; margin-left: auto; }
+.portal-links a { padding: 8px 12px; border-radius: 8px; font-size: 14.5px; font-weight: 500; }
+.portal-links a:hover { background: var(--teal-soft); color: var(--teal); }
+.user-chip { display: flex; align-items: center; gap: 10px; }
+.user-chip .avatar { width: 38px; height: 38px; font-size: 13px; }
+.user-chip strong { display: block; font-size: 14px; color: var(--navy); line-height: 1.2; }
+.user-chip small { color: var(--muted); font-size: 12px; }
+.btn-sm { padding: 8px 16px; font-size: 14px; }
+
+/* ─── Portal content ─── */
+.portal-main { padding: 40px 0 72px; }
+.portal-hello { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+.portal-hello h1 { font-size: clamp(28px, 3.4vw, 40px); margin-top: 8px; }
+.portal-hello p { color: var(--muted); margin-top: 6px; }
+.portal-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+.panel { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow-sm); }
+.panel + .panel { margin-top: 24px; }
+.panel h2 { font: 600 21px/1.2 var(--serif); margin-bottom: 18px; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.panel-head h2 { margin: 0; }
+
+.mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.mini-stat { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px 20px; }
+.mini-stat span { display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.mini-stat strong { font: 600 32px/1.2 var(--serif); color: var(--navy); }
+
+.appt-list { display: grid; gap: 12px; }
+.appt-row {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center;
+    padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+}
+.appt-row .appt-info small { display: block; }
+.appt-notes { grid-column: 2 / -1; font-size: 14px; color: var(--muted); background: var(--cream); padding: 10px 12px; border-radius: 8px; }
+.appt-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.empty { color: var(--muted); text-align: center; padding: 28px; border: 1.5px dashed var(--border); border-radius: var(--radius-sm); }
+
+.profile dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; margin: 0; font-size: 15px; }
+.profile dt { color: var(--muted); }
+.profile dd { margin: 0; color: var(--navy); font-weight: 600; text-align: right; }
+
+.switch { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: var(--radius-sm); background: var(--cream); margin-top: 16px; }
+.switch strong { display: block; color: var(--navy); }
+.switch small { color: var(--muted); }
+
+.tabs-inline { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ─── Dialog ─── */
+dialog.modal { border: 0; border-radius: 18px; padding: 0; width: min(480px, calc(100vw - 32px)); box-shadow: var(--shadow-lg); }
+dialog.modal::backdrop { background: rgba(12,35,64,.5); }
+dialog.modal form { padding: 28px; display: grid; gap: 16px; }
+dialog.modal h2 { font: 600 22px/1.2 var(--serif); }
+dialog.modal textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font: inherit; resize: vertical; }
+dialog.modal .actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* ─── Sign-in page ─── */
+.auth-page { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+.auth-side {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 48px;
+    color: var(--white);
+    background:
+        radial-gradient(500px 400px at 90% 10%, rgba(200,164,93,.3), transparent 60%),
+        linear-gradient(160deg, var(--teal), var(--navy) 70%);
+    overflow: hidden;
+}
+.auth-side h1 { color: var(--white); font-size: clamp(32px, 3.6vw, 48px); margin: 16px 0; }
+.auth-side p { color: rgba(255,255,255,.8); font-size: 17px; max-width: 440px; }
+.auth-roles { display: grid; gap: 14px; margin-top: 36px; }
+.auth-role { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: var(--radius-sm); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
+.auth-role .i { color: var(--gold); width: 24px; height: 24px; margin-top: 2px; }
+.auth-role strong { display: block; }
+.auth-role small { color: rgba(255,255,255,.72); }
+.auth-side .kicker { color: var(--gold); }
+.auth-back { color: rgba(255,255,255,.8); font-size: 14.5px; }
+.auth-back:hover { color: var(--white); }
+
+.auth-main { display: grid; place-items: center; padding: 48px 24px; background: var(--cream); }
+.auth-card { width: min(460px, 100%); }
+.auth-card .book-card { box-shadow: var(--shadow); }
+.auth-card .book-pane { padding: 30px; }
+.auth-card form { display: grid; gap: 16px; }
+.auth-title { font: 600 26px/1.2 var(--serif); color: var(--navy); }
+.auth-sub { color: var(--muted); margin-top: -8px; }
+.signed-in { text-align: center; display: grid; gap: 14px; }
+.demo-note { margin-top: 18px; font-size: 13.5px; color: var(--muted); text-align: center; }
+
+@media (max-width: 900px) {
+    .portal-grid { grid-template-columns: 1fr; }
+    .auth-page { grid-template-columns: 1fr; }
+    .auth-side { padding: 32px 24px; }
+    .auth-roles { display: none; }
+}
+@media (max-width: 600px) {
+    .portal-links { display: none; }
+    .user-chip div { display: none; }
+    .mini-stats { grid-template-columns: 1fr; }
+    .appt-row { grid-template-columns: auto 1fr; }
+    .appt-actions { grid-column: 1 / -1; justify-content: flex-start; }
+    .appt-notes { grid-column: 1 / -1; }
+}
+
+dialog.modal label { display: flex; flex-direction: column; gap: 7px; font-size: 13.5px; font-weight: 600; color: var(--navy); }
+.btn-link { color: var(--teal); font-weight: 600; }

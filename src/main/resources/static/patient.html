@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Health · CarePoint Hospital</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e7c7b'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='white'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="css/portal.css">
+</head>
+<body class="portal">
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18"/><path d="M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/></symbol>
+</svg>
+
+<header class="portal-bar">
+    <div class="wrap portal-bar-inner">
+        <a href="/" class="logo">
+            <span class="logo-mark">+</span>
+            <span class="logo-text">CarePoint<small>My Health</small></span>
+        </a>
+        <nav class="portal-links">
+            <a href="/">Hospital website</a>
+            <a href="/#doctors">Find a doctor</a>
+        </nav>
+        <div class="user-chip">
+            <span class="avatar" id="user-initials">–</span>
+            <div><strong id="user-name">…</strong><small>Patient</small></div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="logout">Sign out</button>
+    </div>
+</header>
+
+<main class="portal-main">
+    <div class="wrap">
+        <div class="portal-hello">
+            <div>
+                <span class="kicker">Patient portal</span>
+                <h1 id="greeting">Welcome</h1>
+                <p>Manage your appointments and see notes from your doctors.</p>
+            </div>
+            <a class="btn btn-primary btn-lg" href="/#book"><svg class="i"><use href="#i-calendar"/></svg> Book appointment</a>
+        </div>
+
+        <div class="mini-stats">
+            <div class="mini-stat"><span>Upcoming</span><strong id="count-upcoming">0</strong></div>
+            <div class="mini-stat"><span>Completed visits</span><strong id="count-completed">0</strong></div>
+            <div class="mini-stat"><span>Cancelled</span><strong id="count-cancelled">0</strong></div>
+        </div>
+
+        <div class="portal-grid">
+            <div>
+                <section class="panel">
+                    <h2>Upcoming appointments</h2>
+                    <div class="appt-list" id="upcoming"></div>
+                </section>
+                <section class="panel">
+                    <h2>Past appointments</h2>
+                    <div class="appt-list" id="past"></div>
+                </section>
+            </div>
+            <aside class="panel profile">
+                <h2>My details</h2>
+                <dl id="profile"></dl>
+                <p class="demo-note">To update your details, please contact reception.</p>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="js/auth.js"></script>
+<script>
+    const { esc, prettyDate, prettyTime, today, toast } = Auth;
+
+    function initials(name) {
+        return name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+    }
+
+    function apptRow(a, canCancel) {
+        const d = new Date(a.appointmentDate + "T00:00");
+        const status = a.status.charAt(0) + a.status.slice(1).toLowerCase();
+        return `
+            <div class="appt-row">
+                <div class="appt-date">
+                    <strong>${d.getDate()}</strong>
+                    <small>${d.toLocaleDateString(undefined, { month: "short" })}</small>
+                </div>
+                <div class="appt-info">
+                    <strong>${esc(a.doctor.name)} · ${esc(a.doctor.specialization)}</strong>
+                    <small>${esc(prettyDate(a.appointmentDate))} at ${esc(prettyTime(a.appointmentTime))}</small>
+                    <small>Reason: ${esc(a.reason)}</small>
+                </div>
+                <div class="appt-actions">
+                    <span class="badge ${esc(a.status)}">${esc(status)}</span>
+                    ${canCancel ? `<button class="btn btn-ghost btn-sm" data-cancel="${a.id}">Cancel</button>` : ""}
+                </div>
+                ${a.doctorNotes ? `<div class="appt-notes"><strong>Doctor's notes:</strong> ${esc(a.doctorNotes)}</div>` : ""}
+            </div>`;
+    }
+
+    async function load() {
+        const appts = await Auth.api("/me/appointments");
+        const key = a => a.appointmentDate + a.appointmentTime;
+        const now = today();
+        const upcoming = appts.filter(a => a.status === "SCHEDULED" && a.appointmentDate >= now)
+            .sort((a, b) => key(a).localeCompare(key(b)));
+        const past = appts.filter(a => !upcoming.includes(a))
+            .sort((a, b) => key(b).localeCompare(key(a)));
+
+        document.getElementById("count-upcoming").textContent = upcoming.length;
+        document.getElementById("count-completed").textContent = appts.filter(a => a.status === "COMPLETED").length;
+        document.getElementById("count-cancelled").textContent = appts.filter(a => a.status === "CANCELLED").length;
+
+        document.getElementById("upcoming").innerHTML = upcoming.length
+            ? upcoming.map(a => apptRow(a, true)).join("")
+            : `<div class="empty">No upcoming appointments. <a href="/#book" class="btn-link">Book one now →</a></div>`;
+        document.getElementById("past").innerHTML = past.length
+            ? past.map(a => apptRow(a, false)).join("")
+            : `<div class="empty">Your past visits will appear here.</div>`;
+    }
+
+    async function init() {
+        const user = await Auth.requireRole("PATIENT");
+        if (!user) return;
+        document.getElementById("user-name").textContent = user.name;
+        document.getElementById("user-initials").textContent = initials(user.name);
+        document.getElementById("greeting").textContent = `Hello, ${user.name.split(" ")[0]}`;
+
+        const p = await Auth.api("/me/profile");
+        const rows = [
+            ["Patient ID", "#" + p.id], ["Email", p.email], ["Phone", p.phone],
+            ["Age", p.age || "—"], ["Gender", p.gender || "—"],
+            ["Blood group", p.bloodGroup || "—"], ["City", p.city || "—"],
+            ["Registered", p.registeredOn ? prettyDate(p.registeredOn) : "—"],
+        ];
+        document.getElementById("profile").innerHTML =
+            rows.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
+        await load();
+    }
+
+    document.getElementById("logout").addEventListener("click", Auth.logout);
+
+    document.addEventListener("click", async (e) => {
+        const btn = e.target.closest("[data-cancel]");
+        if (!btn || !confirm("Cancel this appointment?")) return;
+        try {
+            await Auth.api(`/me/appointments/${btn.dataset.cancel}/cancel`, { method: "PUT" });
+            toast("Appointment cancelled");
+            load();
+        } catch (err) {
+            toast(err.message, true);
+        }
+    });
+
+    init().catch(err => toast(err.message, true));
+</script>
+</body>
+</html>

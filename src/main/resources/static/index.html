@@ -53,7 +53,7 @@
 <div class="infobar">
     <div class="wrap infobar-inner">
         <div class="infobar-items">
-            <a href="#book" data-open-status><svg class="i"><use href="#i-lock"/></svg> Patient portal</a>
+            <a href="login.html"><svg class="i"><use href="#i-lock"/></svg> Patient portal</a>
             <a href="#visitors" class="hide-sm">Pay a bill</a>
             <a href="#international" class="hide-sm">International patients</a>
             <a href="#careers" class="hide-sm">Careers</a>
@@ -78,7 +78,7 @@
             <a href="#visitors">Patients &amp; Visitors</a>
             <a href="#locations">Locations</a>
             <a href="#about">About</a>
-            <a href="admin.html" class="nav-staff"><svg class="i"><use href="#i-lock"/></svg> Staff portal</a>
+            <a href="login.html" class="nav-staff" id="nav-account"><svg class="i"><use href="#i-lock"/></svg> <span>Sign in</span></a>
         </nav>
         <a href="#book" class="btn btn-primary nav-cta">Book Appointment</a>
         <button class="nav-toggle" id="nav-toggle" aria-label="Open menu"><svg class="i"><use href="#i-menu"/></svg></button>
@@ -351,7 +351,7 @@
             <ul class="book-steps">
                 <li><span>1</span> Choose a department &amp; doctor</li>
                 <li><span>2</span> Pick a date and free time slot</li>
-                <li><span>3</span> Enter your details — done!</li>
+                <li><span>3</span> Sign in &amp; confirm — done!</li>
             </ul>
             <div class="book-help">
                 <svg class="i"><use href="#i-phone"/></svg>
@@ -389,51 +389,19 @@
                         <input name="reason" required maxlength="500" placeholder="e.g. Regular check-up, chest pain, follow-up">
                     </label>
                 </fieldset>
-                <fieldset>
-                    <legend>Your details</legend>
-                    <div class="grid-2">
-                        <label>Full name
-                            <input name="name" required maxlength="100" autocomplete="name">
-                        </label>
-                        <label>Email
-                            <input name="email" type="email" required maxlength="100" autocomplete="email">
-                        </label>
-                        <label>Phone
-                            <input name="phone" required pattern="\d{10,15}" inputmode="numeric" placeholder="10–15 digits" autocomplete="tel">
-                        </label>
-                        <label>Age
-                            <input name="age" type="number" min="0" max="150">
-                        </label>
-                        <label>Gender
-                            <select name="gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select>
-                        </label>
-                        <label>Blood group
-                            <select name="bloodGroup"><option value="">Unknown</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
-                        </label>
-                    </div>
-                    <label>City
-                        <input name="city" maxlength="50" autocomplete="address-level2">
-                    </label>
-                </fieldset>
+                <div class="book-account" id="book-account"></div>
                 <p class="form-error" id="book-error" role="alert"></p>
                 <button type="submit" class="btn btn-primary btn-lg btn-block" id="book-submit">
                     <svg class="i"><use href="#i-calendar"/></svg> Confirm appointment
                 </button>
-                <p class="form-note">Already registered? Use the same email and we'll link the booking to your record.</p>
+                <p class="form-note" id="book-note">You'll need a free patient account to book.</p>
             </form>
 
             <!-- Confirmation -->
             <div class="book-pane confirm" data-pane="done" id="book-done"></div>
 
-            <!-- Status lookup -->
-            <form id="status-form" class="book-pane" data-pane="status">
-                <p class="pane-intro">Enter the email you booked with to see your appointments.</p>
-                <div class="inline-form">
-                    <input type="email" name="email" required placeholder="you@example.com">
-                    <button class="btn btn-primary" type="submit">Find</button>
-                </div>
-                <div id="status-results"></div>
-            </form>
+            <!-- Signed-in patient's appointments -->
+            <div class="book-pane" data-pane="status" id="status-pane"></div>
         </div>
     </div>
 </section>
@@ -735,7 +703,7 @@
             <span>care@carepointhospital.com</span>
             <a href="#careers">Careers</a>
             <a href="#news">Health library</a>
-            <a href="admin.html">Staff portal</a>
+            <a href="login.html">Patient &amp; staff sign in</a>
         </div>
     </div>
     <div class="wrap footer-bottom">

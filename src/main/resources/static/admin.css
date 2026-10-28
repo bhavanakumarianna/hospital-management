@@ -194,3 +194,8 @@ input[readonly] { background: var(--bg); color: var(--muted); }
     .topbar { padding: 12px 16px; }
     .row { flex-direction: column; }
 }
+
+/* ─── Signed-in staff ─── */
+.who { display: flex; align-items: center; gap: 10px; }
+.who small { color: var(--muted); }
+.muted { margin: -6px 0 0; color: var(--muted); font-size: 14px; }

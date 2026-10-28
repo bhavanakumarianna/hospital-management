@@ -10,6 +10,7 @@ const state = {
     patients: [],
     doctors: [],
     appointments: [],
+    accounts: [],
     statusFilter: "ALL",
 };
 
@@ -35,6 +36,10 @@ async function api(path, options = {}) {
     const text = await res.text();
     let data = text;
     try { data = text ? JSON.parse(text) : null; } catch { /* plain text */ }
+    if (res.status === 401 || res.status === 403) {
+        // Not signed in as staff any more
+        location.replace("/login.html?next=/admin.html");
+    }
     if (!res.ok) {
         throw new Error(data?.message || `Request failed (${res.status})`);
     }
@@ -62,6 +67,19 @@ async function attempt(fn, successMessage) {
     }
 }
 
+// Login status cell + button for a patient/doctor row
+function loginCell(kind, id) {
+    const has = state.accounts.some(a =>
+        kind === "doctor" ? a.doctorId === id : a.patientId === id);
+    return `<td><span class="badge ${has ? "on" : "off"}">${has ? "Has login" : "No login"}</span></td>`;
+}
+
+function loginButton(kind, id) {
+    const has = state.accounts.some(a =>
+        kind === "doctor" ? a.doctorId === id : a.patientId === id);
+    return `<button class="btn small" data-set-login="${kind}:${id}">${has ? "Reset password" : "Create login"}</button>`;
+}
+
 function emptyRow(cols, text) {
     return `<tr><td class="empty" colspan="${cols}">${text}</td></tr>`;
 }
@@ -74,9 +92,10 @@ function formatTime(time) {
 
 async function loadAll() {
     await attempt(async () => {
-        const [patients, doctors, appointments] = await Promise.all([
-            api("/patients"), api("/doctors"), api("/appointments"),
+        const [patients, doctors, appointments, accounts] = await Promise.all([
+            api("/patients"), api("/doctors"), api("/appointments"), api("/accounts"),
         ]);
+        state.accounts = accounts;
         state.patients = patients;
         state.doctors = doctors;
         state.appointments = appointments;
@@ -135,12 +154,14 @@ function renderPatients() {
                 <td>${esc(p.gender)}</td>
                 <td>${esc(p.city)}</td>
                 <td>${esc(p.bloodGroup)}</td>
+                ${loginCell("patient", p.id)}
                 <td class="row-actions">
+                    ${loginButton("patient", p.id)}
                     <button class="btn small" data-edit-patient="${p.id}">Edit</button>
                     <button class="btn small danger" data-delete-patient="${p.id}">Delete</button>
                 </td>
             </tr>`).join("")
-        : emptyRow(9, query ? "No patients match your search" : "No patients yet");
+        : emptyRow(10, query ? "No patients match your search" : "No patients yet");
 }
 
 function openPatientForm(patient) {
@@ -194,13 +215,15 @@ function renderDoctors() {
                 <td>${esc(d.consultationFee)}</td>
                 <td>${esc(d.phone)}</td>
                 <td><span class="badge ${d.available ? "on" : "off"}">${d.available ? "Available" : "Unavailable"}</span></td>
+                ${loginCell("doctor", d.id)}
                 <td class="row-actions">
+                    ${loginButton("doctor", d.id)}
                     <button class="btn small" data-toggle-doctor="${d.id}">${d.available ? "Set unavailable" : "Set available"}</button>
                     <button class="btn small" data-edit-doctor="${d.id}">Edit</button>
                     <button class="btn small danger" data-delete-doctor="${d.id}">Delete</button>
                 </td>
             </tr>`).join("")
-        : emptyRow(9, query ? "No doctors match your search" : "No doctors yet");
+        : emptyRow(10, query ? "No doctors match your search" : "No doctors yet");
 }
 
 function openDoctorForm(doctor) {
@@ -345,6 +368,15 @@ document.addEventListener("click", async (e) => {
 
     if (d.action === "book") {
         openBookForm();
+    } else if (d.setLogin) {
+        const [kind, id] = d.setLogin.split(":");
+        const person = (kind === "doctor" ? state.doctors : state.patients).find(x => x.id == id);
+        const form = $("#login-form");
+        form.reset();
+        form.elements.kind.value = kind;
+        form.elements.id.value = id;
+        $("#login-who").textContent = `${person.name} will sign in with ${person.email}`;
+        $("#login-dialog").showModal();
     } else if (d.editPatient) {
         openPatientForm(state.patients.find(p => p.id == d.editPatient));
     } else if (d.deletePatient) {
@@ -379,8 +411,31 @@ document.addEventListener("click", async (e) => {
     }
 });
 
+$("#login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const { kind, id, password } = Object.fromEntries(new FormData(e.target));
+    const ok = await attempt(
+        () => api(`/accounts/${kind}/${id}`, { method: "PUT", body: JSON.stringify({ password }) }),
+        "Login saved — share the password with them securely");
+    if (ok) {
+        $("#login-dialog").close();
+        loadAll();
+    }
+});
+
+$("#logout").addEventListener("click", async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    location.href = "/login.html";
+});
+
 // Open the tab from the URL (e.g. /#doctors)
 const startView = location.hash.slice(1);
 if (startView) document.querySelector(`.tab[data-view="${startView}"]`)?.click();
 
-loadAll();
+// Staff only: check the sign-in first
+(async () => {
+    const me = await api("/auth/me").catch(() => null);
+    if (!me || me.role !== "ADMIN") return;
+    $("#admin-name").textContent = me.email;
+    loadAll();
+})();

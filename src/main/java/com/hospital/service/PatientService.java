@@ -9,16 +9,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hospital.entity.Patient;
 import com.hospital.exception.ResourceNotFoundException;
 import com.hospital.repository.PatientRepository;
+import com.hospital.repository.UserAccountRepository;
 
 @Service
 @Transactional
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final UserAccountRepository accountRepository;
 
     public PatientService(
-            PatientRepository patientRepository) {
+            PatientRepository patientRepository,
+            UserAccountRepository accountRepository) {
         this.patientRepository = patientRepository;
+        this.accountRepository = accountRepository;
     }
 
     public Patient registerPatient(Patient patient) {
@@ -66,6 +70,8 @@ public class PatientService {
 
     public void deletePatient(Long id) {
         getPatientById(id);
+        // Their login goes too
+        accountRepository.deleteByPatientId(id);
         patientRepository.deleteById(id);
     }
 

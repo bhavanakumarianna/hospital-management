@@ -459,6 +459,18 @@ legend { font: 600 19px/1 var(--serif); color: var(--navy); margin-bottom: 16px;
 .confirm-details strong { color: var(--navy); text-align: right; }
 
 .pane-intro { color: var(--muted); margin-bottom: 16px; }
+.account-box {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px; margin-bottom: 20px;
+    border-radius: var(--radius-sm);
+    background: var(--teal-soft);
+}
+.account-box.warn { background: var(--gold-soft); }
+.account-box strong { display: block; color: var(--navy); }
+.account-box small { color: var(--muted); font-size: 13.5px; }
+.account-box small a, .account-box > a { color: var(--teal); font-weight: 600; }
+.account-box > a { margin-left: auto; font-size: 14px; white-space: nowrap; }
+.signed-in-prompt { display: grid; gap: 10px; }
 .inline-form { display: flex; gap: 10px; }
 .inline-form input { flex: 1; }
 #status-results { margin-top: 24px; display: grid; gap: 12px; }

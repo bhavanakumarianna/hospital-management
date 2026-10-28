@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -107,6 +109,44 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
                 error, HttpStatus.CONFLICT);
+    }
+
+    // ════════════════════════════════════════
+    // Handle wrong email / password
+    // ════════════════════════════════════════
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse>
+            handleAuthenticationException(
+            AuthenticationException ex) {
+
+        ErrorResponse error = new ErrorResponse(
+                401,
+                "Invalid email or password",
+                LocalDateTime.now(),
+                "UNAUTHORIZED"
+        );
+
+        return new ResponseEntity<>(
+                error, HttpStatus.UNAUTHORIZED);
+    }
+
+    // ════════════════════════════════════════
+    // Handle "not your record"
+    // ════════════════════════════════════════
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse>
+            handleAccessDenied(
+            AccessDeniedException ex) {
+
+        ErrorResponse error = new ErrorResponse(
+                403,
+                ex.getMessage(),
+                LocalDateTime.now(),
+                "FORBIDDEN"
+        );
+
+        return new ResponseEntity<>(
+                error, HttpStatus.FORBIDDEN);
     }
 
     // ════════════════════════════════════════

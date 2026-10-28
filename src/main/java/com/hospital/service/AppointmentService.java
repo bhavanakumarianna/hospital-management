@@ -125,6 +125,21 @@ public class AppointmentService {
                 .findByDoctorId(doctorId);
     }
 
+    // Times already taken for a doctor on a date
+    @Transactional(readOnly = true)
+    public List<java.time.LocalTime> getBookedSlots(
+            Long doctorId, LocalDate date) {
+        return appointmentRepository
+                .findByDoctorIdAndAppointmentDate(
+                        doctorId, date)
+                .stream()
+                .filter(a -> a.getStatus()
+                        == AppointmentStatus.SCHEDULED)
+                .map(Appointment::getAppointmentTime)
+                .sorted()
+                .toList();
+    }
+
     // Get appointments by date
     @Transactional(readOnly = true)
     public List<Appointment> getAppointmentsByDate(

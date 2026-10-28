@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.hospital.entity.Patient;
 import com.hospital.repository.PatientRepository;
+import com.hospital.repository.UserAccountRepository;
 import com.hospital.service.PatientService;
 
 // What is @ExtendWith(MockitoExtension.class)?
@@ -41,6 +42,10 @@ class PatientServiceTest {
     // who returns whatever we tell him to.
     @Mock
     private PatientRepository patientRepository;
+
+    // Fake login storage (used when deleting)
+    @Mock
+    private UserAccountRepository accountRepository;
 
     // What is @InjectMocks?
     // Creates a REAL PatientService
