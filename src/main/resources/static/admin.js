@@ -312,7 +312,7 @@ $("#complete-form").addEventListener("submit", async (e) => {
 // Tabs
 $("#tabs").addEventListener("click", (e) => {
     const tab = e.target.closest(".tab");
-    if (!tab) return;
+    if (!tab || !tab.dataset.view) return;
     document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === tab));
     document.querySelectorAll(".view").forEach(v =>
         v.classList.toggle("active", v.id === `view-${tab.dataset.view}`));

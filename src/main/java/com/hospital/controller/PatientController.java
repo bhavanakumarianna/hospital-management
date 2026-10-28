@@ -77,6 +77,17 @@ public class PatientController {
                 HttpStatus.OK);
     }
 
+    // GET /api/patients/by-email?email=sarah@email.com
+    // Used by the website to find returning patients
+    @GetMapping("/by-email")
+    public ResponseEntity<Patient> getPatientByEmail(
+            @RequestParam String email) {
+        Patient patient =
+                patientService.getPatientByEmail(email);
+        return new ResponseEntity<>(
+                patient, HttpStatus.OK);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<Patient>> searchPatients(
             @RequestParam String name) {

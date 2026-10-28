@@ -20,7 +20,8 @@ A REST API for managing **patients**, **doctors** and **appointments**, built wi
   - no double booking (same doctor, date and time)
 - Complete appointments (with doctor notes) or cancel them
 - Input validation and consistent JSON error responses (400 / 404 / 409 / 500)
-- Built-in website to manage everything from the browser
+- Public hospital website: departments, live doctor profiles, online booking, appointment lookup, patient & visitor info, locations and more
+- Staff portal to manage patients, doctors and appointments
 
 ## Getting started
 
@@ -48,7 +49,7 @@ The `hospital_db` database and its tables are created automatically on first run
 ./mvnw spring-boot:run
 ```
 
-Open **http://localhost:8080** in your browser to use the website (Dashboard, Patients, Doctors, Appointments).
+Open **http://localhost:8080** for the public hospital website, or **http://localhost:8080/admin.html** for the staff portal.
 The REST API is available under `http://localhost:8080/api/...`.
 
 ### 4. Test
@@ -73,6 +74,7 @@ Tests use an in-memory H2 database, so they don't need MySQL.
 | GET | `/api/patients/search?name=sar` | Search by name |
 | GET | `/api/patients/city/{city}` | Filter by city |
 | GET | `/api/patients/blood-group/{group}` | Filter by blood group |
+| GET | `/api/patients/by-email?email=...` | Find a patient by email |
 | GET | `/api/patients/count` | Total patients |
 
 ### Doctors — `/api/doctors`

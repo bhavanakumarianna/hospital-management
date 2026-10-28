@@ -3,191 +3,749 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hospital Management</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='white'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css">
+    <title>CarePoint Hospital · Compassionate care, exceptional medicine</title>
+    <meta name="description" content="CarePoint Hospital — 24/7 emergency care, expert specialists across 12 departments, and online appointment booking.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e7c7b'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='white'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/site.css">
 </head>
 <body>
 
-<header class="topbar">
-    <div class="brand">
-        <span class="logo">+</span>
-        <span>CarePoint Hospital</span>
+<!-- ═════════ ICON SPRITE ═════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+    <symbol id="i-brain" viewBox="0 0 24 24"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M12 5v13"/></symbol>
+    <symbol id="i-bone" viewBox="0 0 24 24"><path d="M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z"/></symbol>
+    <symbol id="i-baby" viewBox="0 0 24 24"><path d="M9 12h.01M15 12h.01M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/></symbol>
+    <symbol id="i-venus" viewBox="0 0 24 24"><path d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM12 15v7M9 19h6"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10.7l-6.1 1.9L12 18.5l-1.9-5.9L4 10.7l6.1-1.9Z"/><path d="M19 3v4M17 5h4"/></symbol>
+    <symbol id="i-ribbon" viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 0-4 4c0 3 4 7 4 7s4-4 4-7a4 4 0 0 0-4-4Z"/><path d="M9.5 10.5 6 21l3-1.5L10.5 22l3-8.5M14.5 10.5 18 21l-3-1.5-1.5 2.5"/></symbol>
+    <symbol id="i-ear" viewBox="0 0 24 24"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"/><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></symbol>
+    <symbol id="i-stetho" viewBox="0 0 24 24"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><path d="M20 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/></symbol>
+    <symbol id="i-siren" viewBox="0 0 24 24"><path d="M7 18v-6a5 5 0 1 1 10 0v6"/><path d="M5 21a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1Z"/><path d="M21 12h1M18.5 4.5 18 5M2 12h1M12 2v1M4.9 4.9l.7.7M12 12v6"/></symbol>
+    <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="m22 6-10 7L2 6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-award" viewBox="0 0 24 24"><path d="M12 15a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z"/><path d="M8.2 13.9 7 23l5-3 5 3-1.2-9.1"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+    <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6.5L4.5 19a1.5 1.5 0 0 0 1.3 2h12.4a1.5 1.5 0 0 0 1.3-2L14 9.5V3M7 15h10"/></symbol>
+    <symbol id="i-pill" viewBox="0 0 24 24"><path d="m10.5 20.5-7-7a5 5 0 1 1 7-7l7 7a5 5 0 1 1-7 7Z"/><path d="m8.5 8.5 7 7"/></symbol>
+    <symbol id="i-bed" viewBox="0 0 24 24"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M10 17h4V5H2v12h3"/><path d="M20 17h2v-3.3a1 1 0 0 0-.3-.7l-3-3a1 1 0 0 0-.7-.3H14v7"/><path d="M7.5 19.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17.5 19.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM6 8h4M8 6v4"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><path d="m23 7-7 5 7 5V7Z"/><path d="M3 5h11a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4M3 10h18"/><path d="M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path class="fill" d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1Z"/></symbol>
+</svg>
+
+<!-- ═════════ TOP INFO BAR ═════════ -->
+<div class="infobar">
+    <div class="wrap infobar-inner">
+        <div class="infobar-items">
+            <a href="#book" data-open-status><svg class="i"><use href="#i-lock"/></svg> Patient portal</a>
+            <a href="#visitors" class="hide-sm">Pay a bill</a>
+            <a href="#international" class="hide-sm">International patients</a>
+            <a href="#careers" class="hide-sm">Careers</a>
+        </div>
+        <a class="infobar-emergency" href="tel:+14045550199">
+            <svg class="i"><use href="#i-siren"/></svg> 24/7 Emergency: <strong>+1 (404) 555-0199</strong>
+        </a>
     </div>
-    <nav class="tabs" id="tabs">
-        <button class="tab active" data-view="dashboard">Dashboard</button>
-        <button class="tab" data-view="patients">Patients</button>
-        <button class="tab" data-view="doctors">Doctors</button>
-        <button class="tab" data-view="appointments">Appointments</button>
-    </nav>
+</div>
+
+<!-- ═════════ NAVIGATION ═════════ -->
+<header class="nav" id="nav">
+    <div class="wrap nav-inner">
+        <a href="#home" class="logo">
+            <span class="logo-mark">+</span>
+            <span class="logo-text">CarePoint<small>Hospital</small></span>
+        </a>
+        <nav class="nav-links" id="nav-links">
+            <a href="#doctors">Find a Doctor</a>
+            <a href="#departments">Specialties</a>
+            <a href="#services">Services</a>
+            <a href="#visitors">Patients &amp; Visitors</a>
+            <a href="#locations">Locations</a>
+            <a href="#about">About</a>
+            <a href="admin.html" class="nav-staff"><svg class="i"><use href="#i-lock"/></svg> Staff portal</a>
+        </nav>
+        <a href="#book" class="btn btn-primary nav-cta">Book Appointment</a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Open menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
 </header>
 
-<main class="container">
+<main>
 
-    <!-- ═════════ DASHBOARD ═════════ -->
-    <section id="view-dashboard" class="view active">
-        <h1>Dashboard</h1>
-        <div class="stats">
-            <div class="stat"><span class="stat-label">Patients</span><span class="stat-value" id="stat-patients">–</span></div>
-            <div class="stat"><span class="stat-label">Doctors</span><span class="stat-value" id="stat-doctors">–</span></div>
-            <div class="stat"><span class="stat-label">Available doctors</span><span class="stat-value" id="stat-available">–</span></div>
-            <div class="stat"><span class="stat-label">Appointments</span><span class="stat-value" id="stat-appointments">–</span></div>
+<!-- ═════════ HERO ═════════ -->
+<section class="hero" id="home">
+    <div class="wrap hero-inner">
+        <div class="hero-copy reveal">
+            <span class="eyebrow"><span class="dot"></span> Accepting new patients</span>
+            <h1>Compassionate care,<br><em>exceptional</em> medicine.</h1>
+            <p class="lead">
+                From routine check-ups to advanced specialist treatment, our doctors
+                put you at the centre of everything we do — with care available
+                around the clock.
+            </p>
+            <div class="hero-actions">
+                <a href="#book" class="btn btn-primary btn-lg">
+                    <svg class="i"><use href="#i-calendar"/></svg> Book an appointment
+                </a>
+                <a href="#doctors" class="btn btn-ghost btn-lg">
+                    Find a doctor <svg class="i"><use href="#i-arrow"/></svg>
+                </a>
+            </div>
+            <div class="hero-trust">
+                <div class="avatars"><span>SJ</span><span>MK</span><span>AR</span><span>+</span></div>
+                <div>
+                    <div class="stars">
+                        <svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg>
+                    </div>
+                    <small>Rated 4.9 by our patients</small>
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <div class="card-head">
-                <h2>Upcoming appointments</h2>
-                <button class="btn primary" data-action="book">+ Book appointment</button>
+        <div class="hero-visual reveal">
+            <div class="hero-orb">
+                <svg viewBox="0 0 400 400" class="hero-art" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#14a3a1"/>
+                            <stop offset="1" stop-color="#0c2340"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="200" cy="200" r="190" fill="url(#g1)"/>
+                    <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+                    <circle cx="200" cy="200" r="110" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+                    <path d="M170 110h60v60h60v60h-60v60h-60v-60h-60v-60h60z" fill="rgba(255,255,255,.95)"/>
+                    <path class="hero-line" d="M30 260h80l20-40 25 80 30-120 25 80h190" fill="none" stroke="#c8a45d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </div>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Reason</th></tr></thead>
-                    <tbody id="upcoming-body"></tbody>
-                </table>
+            <div class="float-card fc-1">
+                <span class="fc-icon green"><svg class="i"><use href="#i-stetho"/></svg></span>
+                <div><strong id="hero-available">Expert specialists</strong><small id="hero-available-note">across 12 departments</small></div>
+            </div>
+            <div class="float-card fc-2">
+                <span class="fc-icon gold"><svg class="i"><use href="#i-award"/></svg></span>
+                <div><strong>Accredited</strong><small>Quality &amp; patient safety</small></div>
+            </div>
+            <div class="float-card fc-3">
+                <span class="fc-icon coral"><svg class="i"><use href="#i-heart"/></svg></span>
+                <div><strong>24/7</strong><small>Emergency care</small></div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- ═════════ PATIENTS ═════════ -->
-    <section id="view-patients" class="view">
-        <div class="page-head">
-            <h1>Patients</h1>
-            <button class="btn primary" id="add-patient">+ Add patient</button>
+    <!-- Quick actions -->
+    <div class="wrap">
+        <div class="quick">
+            <a href="tel:+14045550199" class="quick-item emergency">
+                <span class="quick-icon"><svg class="i"><use href="#i-siren"/></svg></span>
+                <div><strong>Emergency</strong><small>Call +1 (404) 555-0199</small></div>
+            </a>
+            <a href="#book" class="quick-item">
+                <span class="quick-icon"><svg class="i"><use href="#i-calendar"/></svg></span>
+                <div><strong>Book online</strong><small>Pick a doctor &amp; time</small></div>
+            </a>
+            <a href="#doctors" class="quick-item">
+                <span class="quick-icon"><svg class="i"><use href="#i-search"/></svg></span>
+                <div><strong>Find a doctor</strong><small>Browse our specialists</small></div>
+            </a>
+            <a href="#book" class="quick-item" data-open-status>
+                <span class="quick-icon"><svg class="i"><use href="#i-clock"/></svg></span>
+                <div><strong>My appointments</strong><small>Check your bookings</small></div>
+            </a>
         </div>
-        <div class="card">
-            <input type="search" id="patient-search" class="search" placeholder="Search patients by name…">
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Age</th><th>Gender</th><th>City</th><th>Blood</th><th></th></tr></thead>
-                    <tbody id="patients-body"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ═════════ DOCTORS ═════════ -->
-    <section id="view-doctors" class="view">
-        <div class="page-head">
-            <h1>Doctors</h1>
-            <button class="btn primary" id="add-doctor">+ Add doctor</button>
-        </div>
-        <div class="card">
-            <input type="search" id="doctor-search" class="search" placeholder="Search doctors by name…">
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>ID</th><th>Name</th><th>Specialization</th><th>Department</th><th>Experience</th><th>Fee</th><th>Phone</th><th>Status</th><th></th></tr></thead>
-                    <tbody id="doctors-body"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+<!-- ═════════ STATS ═════════ -->
+<section class="stats-band">
+    <div class="wrap stats-grid">
+        <div class="stat reveal"><span class="stat-num" data-count="25" data-suffix="+">0</span><span class="stat-label">Years of care</span></div>
+        <div class="stat reveal"><span class="stat-num" id="stat-doctors" data-count="0">0</span><span class="stat-label">Expert doctors</span></div>
+        <div class="stat reveal"><span class="stat-num" data-count="12">0</span><span class="stat-label">Specialist departments</span></div>
+        <div class="stat reveal"><span class="stat-num" id="stat-patients" data-count="0">0</span><span class="stat-label">Patients registered</span></div>
+    </div>
+</section>
 
-    <!-- ═════════ APPOINTMENTS ═════════ -->
-    <section id="view-appointments" class="view">
-        <div class="page-head">
-            <h1>Appointments</h1>
-            <button class="btn primary" data-action="book">+ Book appointment</button>
+<!-- ═════════ QUALITY STRIP ═════════ -->
+<section class="quality">
+    <div class="wrap quality-inner">
+        <span class="quality-title">Recognised for quality &amp; safety</span>
+        <div class="quality-items">
+            <span><svg class="i"><use href="#i-award"/></svg> Accredited hospital</span>
+            <span><svg class="i"><use href="#i-flask"/></svg> Certified laboratory</span>
+            <span><svg class="i"><use href="#i-shield"/></svg> Patient-safety award</span>
+            <span><svg class="i"><use href="#i-heart"/></svg> Chest pain centre</span>
+            <span><svg class="i"><use href="#i-brain"/></svg> Stroke-ready centre</span>
         </div>
-        <div class="card">
-            <div class="filters" id="status-filters">
-                <button class="chip active" data-status="ALL">All</button>
-                <button class="chip" data-status="SCHEDULED">Scheduled</button>
-                <button class="chip" data-status="COMPLETED">Completed</button>
-                <button class="chip" data-status="CANCELLED">Cancelled</button>
+    </div>
+</section>
+
+<!-- ═════════ ABOUT ═════════ -->
+<section class="section" id="about">
+    <div class="wrap about">
+        <div class="about-visual reveal">
+            <div class="about-card main">
+                <svg class="i big"><use href="#i-heart"/></svg>
+                <h3>Patient-first since 2001</h3>
+                <p>Over two decades of trusted care for families across the region.</p>
             </div>
-            <div class="table-wrap">
-                <table>
-                    <thead><tr><th>ID</th><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Reason</th><th>Status</th><th>Notes</th><th></th></tr></thead>
-                    <tbody id="appointments-body"></tbody>
-                </table>
+            <div class="about-card accent">
+                <span class="about-big">98%</span>
+                <span>patient satisfaction</span>
+            </div>
+            <div class="about-card soft">
+                <svg class="i"><use href="#i-shield"/></svg>
+                <span>Nationally accredited facility</span>
             </div>
         </div>
-    </section>
+        <div class="about-copy reveal">
+            <span class="kicker">About us</span>
+            <h2>Medicine that treats people, not just conditions.</h2>
+            <p>
+                CarePoint Hospital brings together experienced specialists, modern
+                diagnostics and a caring team under one roof. We believe great
+                healthcare starts with listening — so every treatment plan is built
+                around you.
+            </p>
+            <ul class="checks">
+                <li><svg class="i"><use href="#i-check"/></svg> Board-certified specialists across 12 departments</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Same-day appointments and online booking</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Advanced imaging, laboratory and surgical suites</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Transparent pricing with no hidden fees</li>
+            </ul>
+            <div class="why">
+                <div class="why-item"><span class="why-icon"><svg class="i"><use href="#i-users"/></svg></span><div><strong>Expert team</strong><small>Specialists with years of experience</small></div></div>
+                <div class="why-item"><span class="why-icon"><svg class="i"><use href="#i-clock"/></svg></span><div><strong>Always open</strong><small>Emergency care 24 hours a day</small></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ DEPARTMENTS ═════════ -->
+<section class="section tinted" id="departments">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">Departments</span>
+            <h2>Specialist care for every stage of life</h2>
+            <p>Select a department to see the doctors who practise there.</p>
+        </div>
+        <div class="dept-grid" id="dept-grid"></div>
+    </div>
+</section>
+
+<!-- ═════════ DOCTORS ═════════ -->
+<section class="section" id="doctors">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">Our doctors</span>
+            <h2>Meet the specialists who care for you</h2>
+            <p>Experienced, compassionate and ready to help. Book directly with any available doctor.</p>
+        </div>
+        <div class="doctor-tools">
+            <div class="search-box">
+                <svg class="i"><use href="#i-search"/></svg>
+                <input type="search" id="doctor-search" placeholder="Search by doctor name…">
+            </div>
+            <div class="chips" id="doctor-chips"></div>
+        </div>
+        <div class="doctor-grid" id="doctor-grid">
+            <div class="loading">Loading doctors…</div>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ SERVICES ═════════ -->
+<section class="section dark" id="services">
+    <div class="wrap">
+        <div class="section-head light reveal">
+            <span class="kicker">Services &amp; facilities</span>
+            <h2>Everything you need, under one roof</h2>
+            <p>Modern facilities designed for accurate diagnosis, faster recovery and peace of mind.</p>
+        </div>
+        <div class="service-grid">
+            <div class="service reveal"><span class="service-icon"><svg class="i"><use href="#i-siren"/></svg></span><h3>24/7 Emergency</h3><p>Fully staffed emergency department with rapid triage and trauma care.</p></div>
+            <div class="service reveal"><span class="service-icon"><svg class="i"><use href="#i-bed"/></svg></span><h3>Intensive Care (ICU)</h3><p>Critical care beds with continuous monitoring by specialist teams.</p></div>
+            <div class="service reveal"><span class="service-icon"><svg class="i"><use href="#i-flask"/></svg></span><h3>Laboratory</h3><p>Accurate blood tests and pathology, with most results the same day.</p></div>
+            <div class="service reveal"><span class="service-icon"><svg class="i"><use href="#i-scan"/></svg></span><h3>Imaging &amp; Radiology</h3><p>MRI, CT, digital X-ray and ultrasound with expert reporting.</p></div>
+            <div class="service reveal"><span class="service-icon"><svg class="i"><use href="#i-pill"/></svg></span><h3>Pharmacy</h3><p>In-house pharmacy open late, with medication counselling.</p></div>
+            <div class="service reveal"><span class="service-icon"><svg class="i"><use href="#i-truck"/></svg></span><h3>Ambulance</h3><p>Equipped ambulances with paramedics, ready to respond any time.</p></div>
+            <div class="service reveal"><span class="service-icon"><svg class="i"><use href="#i-video"/></svg></span><h3>Telemedicine</h3><p>Video consultations for follow-ups and advice from home.</p></div>
+            <div class="service reveal"><span class="service-icon"><svg class="i"><use href="#i-shield"/></svg></span><h3>Insurance Desk</h3><p>Help with cashless claims and most major insurance providers.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ HEALTH PACKAGES ═════════ -->
+<section class="section" id="packages">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">Health check-up packages</span>
+            <h2>Prevention is the best medicine</h2>
+            <p>Comprehensive screenings designed by our specialists — completed in a single visit.</p>
+        </div>
+        <div class="package-grid">
+            <div class="package reveal">
+                <h3>Essential</h3>
+                <p class="package-desc">A yearly baseline for healthy adults.</p>
+                <div class="price"><span>$</span>99</div>
+                <ul>
+                    <li><svg class="i"><use href="#i-check"/></svg> Complete blood count</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> Blood sugar &amp; cholesterol</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> Kidney &amp; liver function</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> Physician consultation</li>
+                </ul>
+                <a href="#book" class="btn btn-ghost btn-block">Book this package</a>
+            </div>
+            <div class="package featured reveal">
+                <span class="ribbon">Most popular</span>
+                <h3>Comprehensive</h3>
+                <p class="package-desc">In-depth screening for adults over 35.</p>
+                <div class="price"><span>$</span>249</div>
+                <ul>
+                    <li><svg class="i"><use href="#i-check"/></svg> Everything in Essential</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> ECG &amp; chest X-ray</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> Thyroid profile &amp; vitamin D</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> Abdominal ultrasound</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> Diet &amp; lifestyle consultation</li>
+                </ul>
+                <a href="#book" class="btn btn-gold btn-block">Book this package</a>
+            </div>
+            <div class="package reveal">
+                <h3>Heart Care</h3>
+                <p class="package-desc">Focused cardiac risk assessment.</p>
+                <div class="price"><span>$</span>349</div>
+                <ul>
+                    <li><svg class="i"><use href="#i-check"/></svg> Lipid profile &amp; HbA1c</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> ECG, echo &amp; stress test</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> Cardiologist consultation</li>
+                    <li><svg class="i"><use href="#i-check"/></svg> Personalised prevention plan</li>
+                </ul>
+                <a href="#book" class="btn btn-ghost btn-block">Book this package</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ BOOK APPOINTMENT ═════════ -->
+<section class="section tinted" id="book">
+    <div class="wrap book">
+        <div class="book-intro reveal">
+            <span class="kicker">Appointments</span>
+            <h2>Book your visit in under a minute</h2>
+            <p>Choose a department, doctor and time that suits you. We'll confirm your appointment instantly.</p>
+            <ul class="book-steps">
+                <li><span>1</span> Choose a department &amp; doctor</li>
+                <li><span>2</span> Pick a date and free time slot</li>
+                <li><span>3</span> Enter your details — done!</li>
+            </ul>
+            <div class="book-help">
+                <svg class="i"><use href="#i-phone"/></svg>
+                <div><small>Prefer to call?</small><strong>+1 (404) 555-0123</strong></div>
+            </div>
+        </div>
+
+        <div class="book-card reveal">
+            <div class="book-tabs" role="tablist">
+                <button class="book-tab active" data-tab="new">Book appointment</button>
+                <button class="book-tab" data-tab="status">My appointments</button>
+            </div>
+
+            <!-- Book form -->
+            <form id="book-form" class="book-pane active" data-pane="new" novalidate>
+                <fieldset>
+                    <legend>Appointment</legend>
+                    <div class="grid-2">
+                        <label>Department
+                            <select name="department" id="book-department" required></select>
+                        </label>
+                        <label>Doctor
+                            <select name="doctorId" id="book-doctor" required></select>
+                        </label>
+                        <label>Date
+                            <input type="date" name="date" id="book-date" required>
+                        </label>
+                        <label>Time slot
+                            <select name="time" id="book-time" required>
+                                <option value="">Choose doctor &amp; date first</option>
+                            </select>
+                        </label>
+                    </div>
+                    <label>Reason for visit
+                        <input name="reason" required maxlength="500" placeholder="e.g. Regular check-up, chest pain, follow-up">
+                    </label>
+                </fieldset>
+                <fieldset>
+                    <legend>Your details</legend>
+                    <div class="grid-2">
+                        <label>Full name
+                            <input name="name" required maxlength="100" autocomplete="name">
+                        </label>
+                        <label>Email
+                            <input name="email" type="email" required maxlength="100" autocomplete="email">
+                        </label>
+                        <label>Phone
+                            <input name="phone" required pattern="\d{10,15}" inputmode="numeric" placeholder="10–15 digits" autocomplete="tel">
+                        </label>
+                        <label>Age
+                            <input name="age" type="number" min="0" max="150">
+                        </label>
+                        <label>Gender
+                            <select name="gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select>
+                        </label>
+                        <label>Blood group
+                            <select name="bloodGroup"><option value="">Unknown</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
+                        </label>
+                    </div>
+                    <label>City
+                        <input name="city" maxlength="50" autocomplete="address-level2">
+                    </label>
+                </fieldset>
+                <p class="form-error" id="book-error" role="alert"></p>
+                <button type="submit" class="btn btn-primary btn-lg btn-block" id="book-submit">
+                    <svg class="i"><use href="#i-calendar"/></svg> Confirm appointment
+                </button>
+                <p class="form-note">Already registered? Use the same email and we'll link the booking to your record.</p>
+            </form>
+
+            <!-- Confirmation -->
+            <div class="book-pane confirm" data-pane="done" id="book-done"></div>
+
+            <!-- Status lookup -->
+            <form id="status-form" class="book-pane" data-pane="status">
+                <p class="pane-intro">Enter the email you booked with to see your appointments.</p>
+                <div class="inline-form">
+                    <input type="email" name="email" required placeholder="you@example.com">
+                    <button class="btn btn-primary" type="submit">Find</button>
+                </div>
+                <div id="status-results"></div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ PATIENTS & VISITORS ═════════ -->
+<section class="section" id="visitors">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">Patients &amp; visitors</span>
+            <h2>Plan your visit with confidence</h2>
+            <p>Everything you need to know before, during and after your time with us.</p>
+        </div>
+        <div class="visit-grid">
+            <article class="visit reveal">
+                <span class="visit-icon"><svg class="i"><use href="#i-calendar"/></svg></span>
+                <h3>Before your visit</h3>
+                <p>Bring a photo ID, insurance card, current medications and previous reports. Arrive 15 minutes early to check in.</p>
+            </article>
+            <article class="visit reveal">
+                <span class="visit-icon"><svg class="i"><use href="#i-users"/></svg></span>
+                <h3>Visiting hours</h3>
+                <p>General wards 10 AM – 1 PM and 4 PM – 8 PM. Two visitors per patient. ICU visits are arranged with the care team.</p>
+            </article>
+            <article class="visit reveal">
+                <span class="visit-icon"><svg class="i"><use href="#i-shield"/></svg></span>
+                <h3>Billing &amp; insurance</h3>
+                <p>We accept most major insurers and offer cashless claims. Pay bills at the front desk or call our billing team.</p>
+            </article>
+            <article class="visit reveal">
+                <span class="visit-icon"><svg class="i"><use href="#i-flask"/></svg></span>
+                <h3>Medical records</h3>
+                <p>Request copies of reports, discharge summaries and imaging from the records desk within 3 working days.</p>
+            </article>
+            <article class="visit reveal">
+                <span class="visit-icon"><svg class="i"><use href="#i-pin"/></svg></span>
+                <h3>Parking &amp; directions</h3>
+                <p>Free patient parking on site, with drop-off at the main entrance and accessible spaces near every door.</p>
+            </article>
+            <article class="visit reveal">
+                <span class="visit-icon"><svg class="i"><use href="#i-heart"/></svg></span>
+                <h3>Patient rights</h3>
+                <p>You have the right to respectful care, privacy and clear information about your treatment and its costs.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ INTERNATIONAL PATIENTS ═════════ -->
+<section class="section international" id="international">
+    <div class="wrap intl">
+        <div class="intl-copy reveal">
+            <span class="kicker">International patients</span>
+            <h2>World-class care, wherever you're travelling from</h2>
+            <p>Our international patient desk takes care of the details so you can focus on getting better.</p>
+            <a href="#contact" class="btn btn-gold btn-lg">Request a free estimate</a>
+        </div>
+        <ol class="intl-steps reveal">
+            <li><span>01</span><div><strong>Share your reports</strong><small>Send us your medical records for a free review by a specialist.</small></div></li>
+            <li><span>02</span><div><strong>Get a treatment plan</strong><small>Receive a personalised plan and cost estimate within 48 hours.</small></div></li>
+            <li><span>03</span><div><strong>Travel support</strong><small>Visa invitation letters, airport pick-up and nearby accommodation.</small></div></li>
+            <li><span>04</span><div><strong>Care in your language</strong><small>A dedicated coordinator and interpreters throughout your stay.</small></div></li>
+        </ol>
+    </div>
+</section>
+
+<!-- ═════════ LOCATIONS ═════════ -->
+<section class="section tinted" id="locations">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">Locations</span>
+            <h2>Care close to home</h2>
+            <p>One main hospital and neighbourhood clinics across the city.</p>
+        </div>
+        <div class="location-grid">
+            <article class="location reveal">
+                <div class="location-top main"><span class="location-tag">Main hospital</span><svg class="i"><use href="#i-bed"/></svg></div>
+                <div class="location-body">
+                    <h3>CarePoint Hospital — Downtown</h3>
+                    <p><svg class="i"><use href="#i-pin"/></svg> 123 Health Avenue, Atlanta, GA 30303</p>
+                    <p><svg class="i"><use href="#i-clock"/></svg> Open 24 hours · Emergency &amp; inpatient care</p>
+                    <p><svg class="i"><use href="#i-phone"/></svg> +1 (404) 555-0123</p>
+                    <a href="https://maps.google.com/?q=Atlanta+GA" target="_blank" rel="noopener">Get directions →</a>
+                </div>
+            </article>
+            <article class="location reveal">
+                <div class="location-top"><span class="location-tag">Specialty clinic</span><svg class="i"><use href="#i-stetho"/></svg></div>
+                <div class="location-body">
+                    <h3>CarePoint Clinic — Midtown</h3>
+                    <p><svg class="i"><use href="#i-pin"/></svg> 45 Peachtree Street, Atlanta, GA 30308</p>
+                    <p><svg class="i"><use href="#i-clock"/></svg> Mon–Sat 8 AM – 8 PM · Outpatient specialists</p>
+                    <p><svg class="i"><use href="#i-phone"/></svg> +1 (404) 555-0145</p>
+                    <a href="https://maps.google.com/?q=Midtown+Atlanta+GA" target="_blank" rel="noopener">Get directions →</a>
+                </div>
+            </article>
+            <article class="location reveal">
+                <div class="location-top urgent"><span class="location-tag">Urgent care</span><svg class="i"><use href="#i-siren"/></svg></div>
+                <div class="location-body">
+                    <h3>CarePoint Urgent Care — North</h3>
+                    <p><svg class="i"><use href="#i-pin"/></svg> 980 Northside Drive, Atlanta, GA 30318</p>
+                    <p><svg class="i"><use href="#i-clock"/></svg> Daily 7 AM – 11 PM · Walk-ins welcome</p>
+                    <p><svg class="i"><use href="#i-phone"/></svg> +1 (404) 555-0177</p>
+                    <a href="https://maps.google.com/?q=Northside+Drive+Atlanta+GA" target="_blank" rel="noopener">Get directions →</a>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ TESTIMONIALS ═════════ -->
+<section class="section" id="testimonials">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">Patient stories</span>
+            <h2>Trusted by families across the city</h2>
+        </div>
+        <div class="testimonial-grid">
+            <figure class="testimonial reveal">
+                <div class="stars"><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div>
+                <blockquote>“Booking online took a minute and I saw the cardiologist the same week. Everyone explained things clearly and kindly.”</blockquote>
+                <figcaption><span class="avatar">SJ</span><div><strong>Sarah J.</strong><small>Cardiology patient</small></div></figcaption>
+            </figure>
+            <figure class="testimonial reveal">
+                <div class="stars"><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div>
+                <blockquote>“The paediatric team made my son feel completely at ease. You can tell they genuinely care about children.”</blockquote>
+                <figcaption><span class="avatar">MK</span><div><strong>Michael K.</strong><small>Parent</small></div></figcaption>
+            </figure>
+            <figure class="testimonial reveal">
+                <div class="stars"><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div>
+                <blockquote>“From the emergency room to recovery, the care was outstanding. Clean, calm and incredibly professional.”</blockquote>
+                <figcaption><span class="avatar">AR</span><div><strong>Anita R.</strong><small>Orthopaedics patient</small></div></figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ HEALTH LIBRARY ═════════ -->
+<section class="section" id="news">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">Health library</span>
+            <h2>Expert advice for healthier living</h2>
+            <p>Practical guidance from our doctors on staying well.</p>
+        </div>
+        <div class="article-grid">
+            <article class="article reveal">
+                <div class="article-top a1"><svg class="i"><use href="#i-heart"/></svg></div>
+                <div class="article-body">
+                    <span class="article-cat">Cardiology</span>
+                    <h3>Seven everyday habits for a healthier heart</h3>
+                    <p>Small, steady changes to diet, sleep and activity can lower your risk of heart disease.</p>
+                    <span class="article-meta">5 min read</span>
+                </div>
+            </article>
+            <article class="article reveal">
+                <div class="article-top a2"><svg class="i"><use href="#i-baby"/></svg></div>
+                <div class="article-body">
+                    <span class="article-cat">Pediatrics</span>
+                    <h3>Your child's vaccination schedule, explained</h3>
+                    <p>Which vaccines your child needs, when they need them and what to expect afterwards.</p>
+                    <span class="article-meta">4 min read</span>
+                </div>
+            </article>
+            <article class="article reveal">
+                <div class="article-top a3"><svg class="i"><use href="#i-brain"/></svg></div>
+                <div class="article-body">
+                    <span class="article-cat">Neurology</span>
+                    <h3>Recognising a stroke: act F.A.S.T.</h3>
+                    <p>Face drooping, arm weakness, speech difficulty — time to call emergency services.</p>
+                    <span class="article-meta">3 min read</span>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ FAQ ═════════ -->
+<section class="section tinted" id="faq">
+    <div class="wrap faq">
+        <div class="section-head left reveal">
+            <span class="kicker">FAQ</span>
+            <h2>Questions, answered</h2>
+            <p>Can't find what you're looking for? Call us on <strong>+1 (404) 555-0123</strong>.</p>
+        </div>
+        <div class="faq-list reveal">
+            <details open>
+                <summary>How do I book an appointment?</summary>
+                <p>Use the online booking form above — choose a department, doctor, date and time, then enter your details. You can also call our front desk.</p>
+            </details>
+            <details>
+                <summary>Can I cancel or reschedule?</summary>
+                <p>Yes. Please call us at least 24 hours before your appointment and our team will cancel or move it for you.</p>
+            </details>
+            <details>
+                <summary>What should I bring to my first visit?</summary>
+                <p>A photo ID, your insurance card, a list of current medications and any previous test reports or prescriptions.</p>
+            </details>
+            <details>
+                <summary>Do you accept insurance?</summary>
+                <p>We work with most major insurance providers. Our insurance desk can help with cashless claims and paperwork.</p>
+            </details>
+            <details>
+                <summary>What are your visiting hours?</summary>
+                <p>General wards: 10:00 AM – 1:00 PM and 4:00 PM – 8:00 PM. ICU visits are arranged with the care team.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ CONTACT ═════════ -->
+<section class="section" id="contact">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">Contact</span>
+            <h2>We're here when you need us</h2>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-card reveal">
+                <span class="contact-icon"><svg class="i"><use href="#i-pin"/></svg></span>
+                <h3>Visit us</h3>
+                <p>123 Health Avenue<br>Atlanta, GA 30303</p>
+                <a href="https://maps.google.com/?q=Atlanta+GA" target="_blank" rel="noopener">Get directions →</a>
+            </div>
+            <div class="contact-card reveal">
+                <span class="contact-icon"><svg class="i"><use href="#i-phone"/></svg></span>
+                <h3>Call us</h3>
+                <p>Appointments: +1 (404) 555-0123<br>Emergency: +1 (404) 555-0199</p>
+                <a href="tel:+14045550123">Call now →</a>
+            </div>
+            <div class="contact-card reveal">
+                <span class="contact-icon"><svg class="i"><use href="#i-mail"/></svg></span>
+                <h3>Email us</h3>
+                <p>care@carepointhospital.com<br>We reply within one working day.</p>
+                <a href="mailto:care@carepointhospital.com">Send an email →</a>
+            </div>
+            <div class="contact-card reveal">
+                <span class="contact-icon"><svg class="i"><use href="#i-clock"/></svg></span>
+                <h3>Opening hours</h3>
+                <p>OPD: Mon–Sat, 8 AM – 8 PM<br>Emergency &amp; pharmacy: 24/7</p>
+                <a href="#book">Book online →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═════════ CAREERS ═════════ -->
+<section class="careers" id="careers">
+    <div class="wrap careers-inner reveal">
+        <div>
+            <span class="kicker">Careers</span>
+            <h2>Build a career that makes a difference</h2>
+            <p>We're hiring nurses, physicians, technicians and support staff who share our commitment to compassionate care.</p>
+        </div>
+        <a href="mailto:careers@carepointhospital.com" class="btn btn-primary btn-lg">View open positions <svg class="i"><use href="#i-arrow"/></svg></a>
+    </div>
+</section>
+
+<!-- ═════════ EMERGENCY CTA ═════════ -->
+<section class="cta-band">
+    <div class="wrap cta-inner">
+        <div>
+            <h2>In an emergency, every minute matters.</h2>
+            <p>Our emergency department and ambulance service are open 24 hours a day, 7 days a week.</p>
+        </div>
+        <a href="tel:+14045550199" class="btn btn-white btn-lg"><svg class="i"><use href="#i-phone"/></svg> +1 (404) 555-0199</a>
+    </div>
+</section>
+
 </main>
 
-<!-- ═════════ MODALS ═════════ -->
-<dialog id="patient-dialog">
-    <form id="patient-form" method="dialog">
-        <h2 id="patient-title">Add patient</h2>
-        <input type="hidden" name="id">
-        <label>Full name<input name="name" required maxlength="100"></label>
-        <label>Email<input name="email" type="email" required maxlength="100"></label>
-        <div class="row">
-            <label>Phone<input name="phone" required pattern="\d{10,15}" title="10-15 digits"></label>
-            <label>Age<input name="age" type="number" min="0" max="150"></label>
+<!-- ═════════ FOOTER ═════════ -->
+<footer class="footer">
+    <div class="wrap footer-grid">
+        <div class="footer-brand">
+            <a href="#home" class="logo light">
+                <span class="logo-mark">+</span>
+                <span class="logo-text">CarePoint<small>Hospital</small></span>
+            </a>
+            <p>Compassionate care and exceptional medicine for every member of your family.</p>
         </div>
-        <div class="row">
-            <label>Gender
-                <select name="gender"><option value="">—</option><option>Female</option><option>Male</option><option>Other</option></select>
-            </label>
-            <label>Blood group
-                <select name="bloodGroup"><option value="">—</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
-            </label>
+        <div>
+            <h4>Patients</h4>
+            <a href="#doctors">Find a doctor</a>
+            <a href="#book">Book appointment</a>
+            <a href="#packages">Health packages</a>
+            <a href="#visitors">Patients &amp; visitors</a>
+            <a href="#international">International patients</a>
         </div>
-        <label>City<input name="city" maxlength="50"></label>
-        <div class="actions">
-            <button type="button" class="btn" data-close>Cancel</button>
-            <button type="submit" class="btn primary">Save</button>
+        <div>
+            <h4>Departments</h4>
+            <a href="#departments">Cardiology</a>
+            <a href="#departments">Neurology</a>
+            <a href="#departments">Orthopaedics</a>
+            <a href="#departments">Paediatrics</a>
         </div>
-    </form>
-</dialog>
-
-<dialog id="doctor-dialog">
-    <form id="doctor-form" method="dialog">
-        <h2 id="doctor-title">Add doctor</h2>
-        <input type="hidden" name="id">
-        <label>Full name<input name="name" required maxlength="100" placeholder="Dr. …"></label>
-        <div class="row">
-            <label>Specialization<input name="specialization" required maxlength="100"></label>
-            <label>Department<input name="department" maxlength="100"></label>
+        <div>
+            <h4>Contact</h4>
+            <span>123 Health Avenue, Atlanta, GA</span>
+            <span>+1 (404) 555-0123</span>
+            <span>care@carepointhospital.com</span>
+            <a href="#careers">Careers</a>
+            <a href="#news">Health library</a>
+            <a href="admin.html">Staff portal</a>
         </div>
-        <div class="row">
-            <label>Email<input name="email" type="email" required maxlength="100"></label>
-            <label>Phone<input name="phone" required pattern="\d{10,15}" title="10-15 digits"></label>
-        </div>
-        <label>Qualification<input name="qualification" maxlength="100" placeholder="MBBS, MD"></label>
-        <div class="row">
-            <label>Experience (years)<input name="experienceYears" type="number" min="0"></label>
-            <label>Consultation fee<input name="consultationFee" type="number" min="0" step="0.01"></label>
-        </div>
-        <div class="actions">
-            <button type="button" class="btn" data-close>Cancel</button>
-            <button type="submit" class="btn primary">Save</button>
-        </div>
-    </form>
-</dialog>
-
-<dialog id="book-dialog">
-    <form id="book-form" method="dialog">
-        <h2>Book appointment</h2>
-        <label>Patient<select name="patientId" required></select></label>
-        <label>Doctor (available only)<select name="doctorId" required></select></label>
-        <div class="row">
-            <label>Date<input name="date" type="date" required></label>
-            <label>Time<input name="time" type="time" required></label>
-        </div>
-        <label>Reason<input name="reason" required maxlength="500" placeholder="Regular checkup"></label>
-        <div class="actions">
-            <button type="button" class="btn" data-close>Cancel</button>
-            <button type="submit" class="btn primary">Book</button>
-        </div>
-    </form>
-</dialog>
-
-<dialog id="complete-dialog">
-    <form id="complete-form" method="dialog">
-        <h2>Complete appointment</h2>
-        <input type="hidden" name="id">
-        <label>Doctor's notes<textarea name="doctorNotes" required maxlength="1000" rows="4"></textarea></label>
-        <div class="actions">
-            <button type="button" class="btn" data-close>Cancel</button>
-            <button type="submit" class="btn primary">Mark completed</button>
-        </div>
-    </form>
-</dialog>
+    </div>
+    <div class="wrap footer-bottom">
+        <span>© <span id="year"></span> CarePoint Hospital. All rights reserved.</span>
+        <span>Privacy policy · Terms of use</span>
+    </div>
+</footer>
 
 <div id="toast" class="toast" role="status"></div>
 
-<script src="app.js"></script>
+<script src="js/site.js"></script>
 </body>
 </html>

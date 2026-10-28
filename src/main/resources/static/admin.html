@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Staff Portal · CarePoint Hospital</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z' fill='white'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="topbar">
+    <a class="brand" href="/">
+        <span class="logo">+</span>
+        <span>CarePoint <small>Staff Portal</small></span>
+    </a>
+    <nav class="tabs" id="tabs">
+        <button class="tab active" data-view="dashboard">Dashboard</button>
+        <button class="tab" data-view="patients">Patients</button>
+        <button class="tab" data-view="doctors">Doctors</button>
+        <button class="tab" data-view="appointments">Appointments</button>
+        <a class="tab" href="/">← Public website</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <!-- ═════════ DASHBOARD ═════════ -->
+    <section id="view-dashboard" class="view active">
+        <h1>Dashboard</h1>
+        <div class="stats">
+            <div class="stat"><span class="stat-label">Patients</span><span class="stat-value" id="stat-patients">–</span></div>
+            <div class="stat"><span class="stat-label">Doctors</span><span class="stat-value" id="stat-doctors">–</span></div>
+            <div class="stat"><span class="stat-label">Available doctors</span><span class="stat-value" id="stat-available">–</span></div>
+            <div class="stat"><span class="stat-label">Appointments</span><span class="stat-value" id="stat-appointments">–</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <h2>Upcoming appointments</h2>
+                <button class="btn primary" data-action="book">+ Book appointment</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Reason</th></tr></thead>
+                    <tbody id="upcoming-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═════════ PATIENTS ═════════ -->
+    <section id="view-patients" class="view">
+        <div class="page-head">
+            <h1>Patients</h1>
+            <button class="btn primary" id="add-patient">+ Add patient</button>
+        </div>
+        <div class="card">
+            <input type="search" id="patient-search" class="search" placeholder="Search patients by name…">
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Age</th><th>Gender</th><th>City</th><th>Blood</th><th></th></tr></thead>
+                    <tbody id="patients-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═════════ DOCTORS ═════════ -->
+    <section id="view-doctors" class="view">
+        <div class="page-head">
+            <h1>Doctors</h1>
+            <button class="btn primary" id="add-doctor">+ Add doctor</button>
+        </div>
+        <div class="card">
+            <input type="search" id="doctor-search" class="search" placeholder="Search doctors by name…">
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Name</th><th>Specialization</th><th>Department</th><th>Experience</th><th>Fee</th><th>Phone</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="doctors-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═════════ APPOINTMENTS ═════════ -->
+    <section id="view-appointments" class="view">
+        <div class="page-head">
+            <h1>Appointments</h1>
+            <button class="btn primary" data-action="book">+ Book appointment</button>
+        </div>
+        <div class="card">
+            <div class="filters" id="status-filters">
+                <button class="chip active" data-status="ALL">All</button>
+                <button class="chip" data-status="SCHEDULED">Scheduled</button>
+                <button class="chip" data-status="COMPLETED">Completed</button>
+                <button class="chip" data-status="CANCELLED">Cancelled</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Reason</th><th>Status</th><th>Notes</th><th></th></tr></thead>
+                    <tbody id="appointments-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- ═════════ MODALS ═════════ -->
+<dialog id="patient-dialog">
+    <form id="patient-form" method="dialog">
+        <h2 id="patient-title">Add patient</h2>
+        <input type="hidden" name="id">
+        <label>Full name<input name="name" required maxlength="100"></label>
+        <label>Email<input name="email" type="email" required maxlength="100"></label>
+        <div class="row">
+            <label>Phone<input name="phone" required pattern="\d{10,15}" title="10-15 digits"></label>
+            <label>Age<input name="age" type="number" min="0" max="150"></label>
+        </div>
+        <div class="row">
+            <label>Gender
+                <select name="gender"><option value="">—</option><option>Female</option><option>Male</option><option>Other</option></select>
+            </label>
+            <label>Blood group
+                <select name="bloodGroup"><option value="">—</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
+            </label>
+        </div>
+        <label>City<input name="city" maxlength="50"></label>
+        <div class="actions">
+            <button type="button" class="btn" data-close>Cancel</button>
+            <button type="submit" class="btn primary">Save</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="doctor-dialog">
+    <form id="doctor-form" method="dialog">
+        <h2 id="doctor-title">Add doctor</h2>
+        <input type="hidden" name="id">
+        <label>Full name<input name="name" required maxlength="100" placeholder="Dr. …"></label>
+        <div class="row">
+            <label>Specialization<input name="specialization" required maxlength="100"></label>
+            <label>Department<input name="department" maxlength="100"></label>
+        </div>
+        <div class="row">
+            <label>Email<input name="email" type="email" required maxlength="100"></label>
+            <label>Phone<input name="phone" required pattern="\d{10,15}" title="10-15 digits"></label>
+        </div>
+        <label>Qualification<input name="qualification" maxlength="100" placeholder="MBBS, MD"></label>
+        <div class="row">
+            <label>Experience (years)<input name="experienceYears" type="number" min="0"></label>
+            <label>Consultation fee<input name="consultationFee" type="number" min="0" step="0.01"></label>
+        </div>
+        <div class="actions">
+            <button type="button" class="btn" data-close>Cancel</button>
+            <button type="submit" class="btn primary">Save</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="book-dialog">
+    <form id="book-form" method="dialog">
+        <h2>Book appointment</h2>
+        <label>Patient<select name="patientId" required></select></label>
+        <label>Doctor (available only)<select name="doctorId" required></select></label>
+        <div class="row">
+            <label>Date<input name="date" type="date" required></label>
+            <label>Time<input name="time" type="time" required></label>
+        </div>
+        <label>Reason<input name="reason" required maxlength="500" placeholder="Regular checkup"></label>
+        <div class="actions">
+            <button type="button" class="btn" data-close>Cancel</button>
+            <button type="submit" class="btn primary">Book</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="complete-dialog">
+    <form id="complete-form" method="dialog">
+        <h2>Complete appointment</h2>
+        <input type="hidden" name="id">
+        <label>Doctor's notes<textarea name="doctorNotes" required maxlength="1000" rows="4"></textarea></label>
+        <div class="actions">
+            <button type="button" class="btn" data-close>Cancel</button>
+            <button type="submit" class="btn primary">Mark completed</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

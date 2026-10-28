@@ -70,6 +70,16 @@ class AppointmentApiTest {
                 .param("reason", "Again"))
                 .andExpect(status().isBadRequest());
 
+        // Website looks up returning patients by email
+        mockMvc.perform(get("/api/patients/by-email")
+                .param("email", "sarah.api@email.com"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+
+        mockMvc.perform(get("/api/patients/by-email")
+                .param("email", "nobody@email.com"))
+                .andExpect(status().isNotFound());
+
         mockMvc.perform(get("/api/appointments/doctor/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
@@ -91,7 +101,10 @@ class AppointmentApiTest {
                 .andExpect(status().isOk())
                 .andExpect(forwardedUrl("index.html"));
 
-        mockMvc.perform(get("/app.js"))
+        mockMvc.perform(get("/js/site.js"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/admin.html"))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/no-such-page"))
